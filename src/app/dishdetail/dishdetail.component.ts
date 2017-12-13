@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Params, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { Location } from '@angular/common'; //tracks the location of the page in the browser history; this enables the back() functionality
 
 import { Dish } from '../shared/dish';
 import { DishService } from '../services/dish.service';
