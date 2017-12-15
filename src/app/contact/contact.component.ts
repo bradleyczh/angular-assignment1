@@ -9,6 +9,7 @@ import { Feedback, ContactType } from '../shared/feedback';
 })
 export class ContactComponent implements OnInit {
 
+  errMsg: string;
   feedbackForm: FormGroup;
   feedback: Feedback;
   contactType = ContactType;
@@ -61,7 +62,8 @@ export class ContactComponent implements OnInit {
       message: ''
     });
     this.feedbackForm.valueChanges
-      .subscribe(data => this.onValueChanged(data));
+      .subscribe(data => this.onValueChanged(data),
+        errMsg => this.errMsg = <any>errMsg);
     this.onValueChanged(); // (re)set validation messages now
 
   }

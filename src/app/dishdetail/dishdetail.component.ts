@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Params, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'; //tracks the location of the page in the browser history; this enables the back() functionality
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -21,6 +21,7 @@ export class DishdetailComponent implements OnInit {
   next: number;
   reviewForm: FormGroup;
   review: Comment;
+  errMsg: string;
 
   formErrors = {
     'author': '',
@@ -43,6 +44,7 @@ export class DishdetailComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private fb: FormBuilder,
+    @Inject('BaseURL') private BaseURL,
   ) {
     this.createForm();
   }
@@ -51,7 +53,9 @@ export class DishdetailComponent implements OnInit {
     this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
     this.route.params
       .switchMap((params: Params) => this.dishService.getDish(+params['id']))
-      .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); });
+      .subscribe(
+        dish => { this.dish = dish; this.setPrevNext(dish.id); },
+        errMsg => this.errMsg = <any>errMsg);
   }
 
   setPrevNext(dishId: number) {
@@ -67,8 +71,9 @@ export class DishdetailComponent implements OnInit {
       comment: ['', Validators.required],
       date: new Date().toString()
     });
-    this.reviewForm.valueChanges
-      .subscribe(data => this.onValueChanged(data));
+    this.reviewForm.valueChanges.subscribe(
+      data => this.onValueChanged(data),
+      errMsg => this.errMsg = <any>errMsg);
     this.onValueChanged();
   }
 

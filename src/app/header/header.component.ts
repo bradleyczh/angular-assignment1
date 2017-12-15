@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { LoginComponent } from '../login/login.component';
 
@@ -10,7 +10,8 @@ import { LoginComponent } from '../login/login.component';
 export class HeaderComponent implements OnInit {
 
   constructor(
-    public dialog: MdDialog
+    public dialog: MdDialog,
+    @Inject('BaseURL') private BaseURL
   ) { }
 
   ngOnInit() {
