@@ -24,6 +24,9 @@ import { ProcessHTTPMsgService } from './services/process-httpmsg.service';
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { baseURL } from './shared/baseurl';
+import { RestangularModule, Restangular } from 'ngx-restangular';
+import { RestangularConfigFactory } from './shared/restConfig';
+import { HighlightDirective } from './directives/highlight.directive';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,8 @@ import { baseURL } from './shared/baseurl';
     HomeComponent,
     AboutComponent,
     ContactComponent,
-    LoginComponent
+    LoginComponent,
+    HighlightDirective
   ],
   imports: [
     BrowserModule,
@@ -46,6 +50,7 @@ import { baseURL } from './shared/baseurl';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    RestangularModule.forRoot(RestangularConfigFactory),
   ],
   providers: [
     DishService,
