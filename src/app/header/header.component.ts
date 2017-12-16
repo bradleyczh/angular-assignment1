@@ -11,7 +11,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     public dialog: MdDialog,
-    @Inject('BaseURL') private BaseURL
+    @Inject('BaseURL') public BaseURL //made baseurl variable public here so it doesn't throw error during ng build(bug issue)
   ) { }
 
   ngOnInit() {
