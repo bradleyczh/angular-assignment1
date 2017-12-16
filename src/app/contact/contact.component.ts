@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Feedback, ContactType } from '../shared/feedback';
-import { flyInOut } from './../animations/app.animation';
+import { visibility, flyInOut, expand } from '../animations/app.animation';
+
+import { FeedbackService } from './../services/feedback.service';
 
 @Component({
   selector: 'app-contact',
@@ -12,14 +14,19 @@ import { flyInOut } from './../animations/app.animation';
   'style': 'display: block;'
   },
   animations: [
-    flyInOut()
+    flyInOut(),
+    visibility(),
+    expand()
   ]
 })
 export class ContactComponent implements OnInit {
 
+  visibility = 'shown';
+  formErr: string;
   errMsg: string;
   feedbackForm: FormGroup;
   feedback: Feedback;
+  feedbackcopy = null;
   contactType = ContactType;
   formErrors = {
   'firstname': '',
@@ -51,7 +58,8 @@ export class ContactComponent implements OnInit {
 
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private feedbackService: FeedbackService,
   ) {
     this.createForm();
   }
@@ -73,6 +81,7 @@ export class ContactComponent implements OnInit {
       .subscribe(data => this.onValueChanged(data),
         errMsg => this.errMsg = <any>errMsg);
     this.onValueChanged(); // (re)set validation messages now
+    this.feedback = null;
 
   }
 
@@ -93,7 +102,19 @@ export class ContactComponent implements OnInit {
     }
 
   onSubmit() {
-    this.feedback = this.feedbackForm.value;
+    this.visibility = 'hidden';
+    this.feedbackcopy = this.feedbackForm.value;
+    this.feedbackService.submitFeedback(this.feedbackcopy)
+      .subscribe(feedback => {
+        this.feedback = feedback;
+        setInterval(() => {
+          this.visibility = 'shown';
+          this.feedback = null;
+          this.feedbackcopy = null;
+        }, 5000);
+      }, err => {
+        this.formErr = <any>err;
+      });
     this.feedbackForm.reset({
       firstname: '',
       lastname: '',

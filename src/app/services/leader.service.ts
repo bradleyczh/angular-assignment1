@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { HttpClient } from '@angular/common/http';
-import { baseURL } from '../shared/baseurl';
-import { ProcessHTTPMsgService } from './process-httpmsg.service';
-import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import { RestangularModule, Restangular } from 'ngx-restangular';
 
 import { Leader } from './../shared/leader';
 
@@ -12,26 +9,20 @@ import { Leader } from './../shared/leader';
 export class LeaderService {
 
   constructor(
-    private http: HttpClient,
-    private processHTTPMsgService: ProcessHTTPMsgService
+    private restangular: Restangular,
   ) { }
 
   getLeaders(): Observable<Leader[]> {
-    return this.http.get(baseURL + 'leaders')
-      .map(res => this.processHTTPMsgService.extractData(res))
-      .catch(err => this.processHTTPMsgService.handleError(err));
+    return this.restangular.all('leaders').getList();
   }
 
   getLeader(id: number): Observable<Leader> {
-    return this.http.get(baseURL + 'leaders/' + id)
-      .map(res => this.processHTTPMsgService.extractData(res))
-      .catch(err => this.processHTTPMsgService.handleError(err));
+    return this.restangular.one('leaders',id).get();
   }
 
   getFeaturedLeader(): Observable<Leader> {
-    return this.http.get(baseURL + 'leaders?featured=true')
-      .map(res => this.processHTTPMsgService.extractData(res)[0])
-      .catch(err => this.processHTTPMsgService.handleError(err));
+    return this.restangular.all('leaders').getList({featured: true})
+      .map(leaders => leaders[0]);
   }
 
 }

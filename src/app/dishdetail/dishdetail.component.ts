@@ -26,6 +26,7 @@ import { DishService } from '../services/dish.service';
 export class DishdetailComponent implements OnInit {
 
   dish: Dish;
+  dishcopy = null;
   dishIds: number[];
   prev: number;
   next: number;
@@ -70,6 +71,7 @@ export class DishdetailComponent implements OnInit {
       .subscribe(
         dish => {
           this.dish = dish;
+          this.dishcopy = dish;
           this.setPrevNext(dish.id);
           this.visibility = 'shown';
         },
@@ -115,7 +117,9 @@ export class DishdetailComponent implements OnInit {
 
   onSubmit() {
     this.review = this.reviewForm.value;
-    this.dish.comments.push(this.review);
+    this.dishcopy.comments.push(this.review);
+    this.dishcopy.save()
+      .subscribe(dish => this.dish = dish);
     this.reviewForm.reset({
       name: '',
       rating: 5,
